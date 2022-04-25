@@ -20,24 +20,22 @@ jobs:
           distribution: adopt
 
       - name: Add +x permission
-        working-directory: java
         run: chmod +x gradlew
 
       - name: Gradle Build
-        working-directory: java
         run: ./gradlew clean build -x test
 
       - name: Upload jar file to Artifact
         uses: actions/upload-artifact@v3
         with:
-          name: run
+          name: build
           path: |
             memory-leak/build/libs/memory-leak.jar
             wrong-db-port/build/libs/wrong-db-port.jar
           retention-days: 1
 
 
-  memory-leak-build:
+  container-build:
     needs: jar
     runs-on: ubuntu-latest
     steps:
@@ -47,8 +45,9 @@ jobs:
       - name: Download app from Artifact
         uses: actions/download-artifact@v3
         with:
-          name: run
-          path: /build
+          name: build
+
+      - run: find . -name "*.jar"
 
       - name: Set up QEMU
         id: qemu
@@ -64,8 +63,10 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_TOKEN }}
 
-      - name: Move jar file
-        run: mv run java/
+      - name: Create symbolic link
+        run: |
+          ln -s "$(pwd)/build" memory-leak/build
+          ln -s "$(pwd)/build" wrong-db-port/build
 
       - name: Docker Build
         working-directory: memory-leak
