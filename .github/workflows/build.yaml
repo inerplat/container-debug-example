@@ -32,6 +32,7 @@ jobs:
           path: |
             memory-leak/build/libs/memory-leak.jar
             wrong-db-port/build/libs/wrong-db-port.jar
+            insert-file/build/libs/insert-file.jar
           retention-days: 1
 
 
@@ -67,6 +68,8 @@ jobs:
         run: |
           ln -s "$(pwd)/build" memory-leak/build
           ln -s "$(pwd)/build" wrong-db-port/build
+          ln -s "$(pwd)/build" insert-file/build
+
 
       - name: Docker Build
         working-directory: memory-leak
@@ -75,3 +78,7 @@ jobs:
       - name: Docker Build
         working-directory: wrong-db-port
         run: docker buildx build --platform linux/amd64,linux/arm64 -t inerplat/container-build-example:wrong-db-port --push .
+
+      - name: Docker Build
+        working-directory: insert-file
+        run: docker buildx build --platform linux/amd64,linux/arm64 -t inerplat/container-build-example:insert-file --push .

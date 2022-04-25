@@ -1,3 +1,4 @@
 rootProject.name = 'container-debug-example'
 include 'memory-leak'
 include 'wrong-db-port'
+include 'insert-file'
