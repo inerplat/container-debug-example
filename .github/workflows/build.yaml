@@ -73,12 +73,12 @@ jobs:
 
       - name: Docker Build
         working-directory: memory-leak
-        run: docker buildx build --platform linux/amd64,linux/arm64 -t inerplat/container-build-example:memory-leak --push .
+        run: docker buildx build --platform linux/amd64,linux/arm64 -t inerplat/container-debug-example:memory-leak --push .
 
       - name: Docker Build
         working-directory: wrong-db-port
-        run: docker buildx build --platform linux/amd64,linux/arm64 -t inerplat/container-build-example:wrong-db-port --push .
+        run: docker buildx build --platform linux/amd64,linux/arm64 -t inerplat/container-debug-example:wrong-db-port --push .
 
       - name: Docker Build
         working-directory: insert-file
-        run: docker buildx build --platform linux/amd64,linux/arm64 -t inerplat/container-build-example:insert-file --push .
+        run: docker buildx build --platform linux/amd64,linux/arm64 -t inerplat/container-debug-example:insert-file --push .
