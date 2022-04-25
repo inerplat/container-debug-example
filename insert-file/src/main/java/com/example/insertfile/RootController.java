@@ -1,6 +1,5 @@
 package com.example.insertfile;
 
-import lombok.SneakyThrows;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
@@ -14,7 +13,7 @@ import java.io.InputStreamReader;
 public class RootController {
 
     @GetMapping("/{fileName}")
-    public String getFile(@PathVariable String fileName) {
+    public String getFile(@PathVariable String fileName) throws FileNotFoundException {
         File file = new File("/file/" + fileName);
         FileInputStream fileInputStream = null;
         try {
@@ -30,6 +29,6 @@ public class RootController {
         catch (Exception e) {
             e.printStackTrace();
         }
-        return "";
+        throw new FileNotFoundException();
     }
 }

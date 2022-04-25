@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-debug-example-insert-file
+  labels:
+    app: insert-file
+spec:
+  selector:
+    matchLabels:
+      app: insert-file
+  template:
+    metadata:
+      labels:
+        app: insert-file
+    spec:
+      initContainers:
+        - name: insert
+          image: busybox
+          command:
+            - /bin/sh
+            - -c
+            - "while [ ! -f /tmp/lock ]; do sleep 5; done"
+          volumeMounts:
+            - name: debug-volume
+              mountPath: /file
+              readOnly: false
+      containers:
+        - name: app
+          image: inerplat/container-debug-example:insert-file
+          ports:
+            - containerPort: 8080
+          volumeMounts:
+            - name: debug-volume
+              mountPath: /file
+              readOnly: false
+      volumes:
+        - name: debug-volume
+          emptyDir: { }
