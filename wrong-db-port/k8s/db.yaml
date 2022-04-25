@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: wrong-db-port-example-mysql-svc
+spec:
+  type: NodePort
+  ports:
+    - port: 3306
+      targetPort: 3306
+      nodePort: 30306
+  selector:
+    app: wrong-db-port-mysql
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: wrong-db-port-mysql
+spec:
+  selector:
+    matchLabels:
+      app: wrong-db-port-mysql
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      labels:
+        app: wrong-db-port-mysql
+    spec:
+      containers:
+        - image: mariadb:latest
+          name: mysql
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: "1q2w3e4r!"
+          ports:
+            - containerPort: 3306
+              name: mysql
+          volumeMounts:
+            - name: mysql-initdb
+              mountPath: /docker-entrypoint-initdb.d
+      volumes:
+        - name: mysql-initdb
+          configMap:
+            name: wrong-db-port-mysql-init-configmap
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: wrong-db-port-mysql-init-configmap
+data:
+  init.sql: |
+    CREATE DATABASE IF NOT EXISTS example;
+    USE example;
+    CREATE TABLE message (
+      id BIGINT NOT NULL AUTO_INCREMENT,
+      msg VARCHAR(255),
+      PRIMARY KEY(id)
+    ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=utf8;
+    INSERT INTO message VALUES (1, "HELLO");
+    INSERT INTO message VALUES (2, "WORLD");
+    INSERT INTO message VALUES (3, "IF YOU'RE READING THIS");
+    INSERT INTO message VALUES (4, "EHAGHKDCI");

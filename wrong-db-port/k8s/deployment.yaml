@@ -1,0 +1,27 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-debug-example-wrong-db-port
+  labels:
+    app: wrong-db-port
+spec:
+  selector:
+    matchLabels:
+      app: wrong-db-port
+  template:
+    metadata:
+      labels:
+        app: wrong-db-port
+    spec:
+      containers:
+        - name: app
+          image: inerplat/container-debug-example:wrong-db-port
+          ports:
+            - containerPort: 8080
+          command:
+            - /bin/sh
+            - -c
+            - tail -f /dev/null
+          env:
+            - name: SPRING_PROFILES_ACTIVE
+              value: "local"
