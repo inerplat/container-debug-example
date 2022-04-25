@@ -1,0 +1,90 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: memory-leak
+  labels:
+    app: memory-leak
+spec:
+  restartPolicy: Never
+  containers:
+    - name: app
+      image: inerplat/container-debug-example:memory-leak
+      ports:
+        - containerPort: 8080
+      command:
+        - java
+      args:
+        - -Xmx64m
+        - -Xms64m
+        - -XX:+HeapDumpOnOutOfMemoryError
+        - -XX:HeapDumpPath=/run/dump/oom.bin
+        - -jar
+        - /run/memory-leak.jar
+      livenessProbe:
+        exec:
+          command:
+            - /bin/sh
+            - -c
+            - "if [ ! -f /run/dump/oom.bin ]; then exit 0; else exit 1; fi"
+      volumeMounts:
+        - name: debug
+          mountPath: /run/dump
+          readOnly: false
+      resources:
+        requests:
+          memory: 128Mi
+        limits:
+          memory: 256Mi
+    - name: share-volume
+      image: busybox
+      command:
+        - /bin/sh
+        - -c
+        - tail -f /dev/null
+      volumeMounts:
+        - name: debug
+          mountPath: /debug
+          readOnly: false
+  volumes:
+    - name: debug
+      emptyDir: {}
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: container-debug-example-memory-leak
+  labels:
+    app: memory-leak
+spec:
+  replicas: 5
+  selector:
+    matchLabels:
+      app: memory-leak
+  template:
+    metadata:
+      labels:
+        app: memory-leak
+    spec:
+      containers:
+        - name: app
+          image: inerplat/container-debug-example:memory-leak
+          ports:
+            - containerPort: 8080
+          resources:
+            requests:
+              memory: 128Mi
+            limits:
+              memory: 128Mi
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: container-debug-example-memory-leak-svc
+spec:
+  type: NodePort
+  selector:
+    app: memory-leak
+  ports:
+    - port: 8080
+      targetPort: 8080
+      nodePort: 32323
