@@ -5,4 +5,4 @@ WORKDIR /app
 RUN pip install fastapi uvicorn[standard]
 
 COPY . .
-CMD ["uvicorn" "index:app" "--reload"]
+CMD ["uvicorn", "index:app", "--host", "0.0.0.0", "--port", "80"]
