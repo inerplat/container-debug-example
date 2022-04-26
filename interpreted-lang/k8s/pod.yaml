@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: interpreted-lang
+  labels:
+    app: intrepreted-lang
+spec:
+  containers:
+    - name: fastapi
+      image: inerplat/container-debug-example:interpreted-lang
+      ports:
+        - containerPort: 8000
