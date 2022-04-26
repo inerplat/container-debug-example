@@ -36,7 +36,7 @@ spec:
         limits:
           memory: 256Mi
     - name: share-volume
-      image: busybox
+      image: ubuntu
       command:
         - /bin/sh
         - -c
