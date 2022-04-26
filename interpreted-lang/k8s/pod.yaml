@@ -9,4 +9,4 @@ spec:
     - name: fastapi
       image: inerplat/container-debug-example:interpreted-lang
       ports:
-        - containerPort: 8000
+        - containerPort: 80
