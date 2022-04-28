@@ -84,5 +84,5 @@ jobs:
         run: docker buildx build --platform linux/amd64,linux/arm64 -t inerplat/container-debug-example:insert-file --push .
 
       - name: Docker Build
-        working-directory: interpreted-lang
-        run: docker buildx build --platform linux/amd64,linux/arm64 -t inerplat/container-debug-example:interpreted-lang --push .
+        working-directory: python-missed-package
+        run: docker buildx build --platform linux/amd64,linux/arm64 -t inerplat/container-debug-example:python-missed-package --push .
